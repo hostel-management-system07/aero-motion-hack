@@ -28,12 +28,10 @@ const Index = () => {
   useEffect(() => {
     // Initialize AOS
     AOS.init({
-      duration: 1200,
-      easing: 'ease-out-cubic',
-      once: false,
-      mirror: true,
-      offset: 100,
-      delay: 0,
+      duration: 1000,
+      easing: 'ease-in-out',
+      once: true,
+      mirror: false,
     });
 
     // Initialize Locomotive Scroll
@@ -41,15 +39,8 @@ const Index = () => {
       const locomotiveScroll = new LocomotiveScroll({
         el: scrollRef.current,
         smooth: true,
-        multiplier: 0.8,
+        multiplier: 1,
         class: 'is-revealed',
-        lerp: 0.08,
-        smartphone: {
-          smooth: true,
-        },
-        tablet: {
-          smooth: true,
-        },
       });
 
       // Update scroll on window resize
@@ -59,11 +50,6 @@ const Index = () => {
 
       window.addEventListener('resize', handleResize);
 
-      // Refresh AOS when Locomotive Scroll updates
-      locomotiveScroll.on('scroll', () => {
-        AOS.refresh();
-      });
-
       return () => {
         locomotiveScroll.destroy();
         window.removeEventListener('resize', handleResize);
@@ -72,19 +58,18 @@ const Index = () => {
   }, []);
 
   return (
-    <div ref={scrollRef} data-scroll-container className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Enhanced Particles Background with deeper parallax */}
+    <div ref={scrollRef} data-scroll-container className="min-h-screen bg-black text-white relative">
+      {/* Particles Background */}
       <Particles
         id="tsparticles"
         init={particlesInit}
-        className="fixed inset-0 z-0"
         options={{
           background: {
             color: {
-              value: "transparent",
+              value: "#000000",
             },
           },
-          fpsLimit: 60,
+          fpsLimit: 120,
           interactivity: {
             events: {
               onClick: {
@@ -93,7 +78,7 @@ const Index = () => {
               },
               onHover: {
                 enable: true,
-                mode: "grab",
+                mode: "repulse",
               },
               resize: {
                 enable: true,
@@ -101,92 +86,64 @@ const Index = () => {
             },
             modes: {
               push: {
-                quantity: 3,
+                quantity: 4,
               },
-              grab: {
+              repulse: {
                 distance: 200,
-                links: {
-                  opacity: 0.8,
-                },
+                duration: 0.4,
               },
             },
           },
           particles: {
             color: {
-              value: ["#00d9ff", "#a855f7", "#ec4899", "#4ade80"],
+              value: ["#00d9ff", "#a855f7", "#ec4899"],
             },
             links: {
               color: "#00d9ff",
-              distance: 120,
+              distance: 150,
               enable: true,
-              opacity: 0.2,
+              opacity: 0.3,
               width: 1,
+            },
+            collisions: {
+              enable: false,
             },
             move: {
               direction: "none",
               enable: true,
               outModes: {
-                default: "out",
+                default: "bounce",
               },
-              random: true,
-              speed: 0.5,
+              random: false,
+              speed: 1,
               straight: false,
             },
             number: {
               density: {
                 enable: true,
-                area: 1000,
+                value: 800,
               },
-              value: 60,
+              value: 80,
             },
             opacity: {
-              value: { min: 0.1, max: 0.7 },
-              animation: {
-                enable: true,
-                speed: 1,
-                minimumValue: 0.1,
-              },
+              value: 0.5,
             },
             shape: {
-              type: ["circle", "triangle"],
+              type: "circle",
             },
             size: {
-              value: { min: 1, max: 3 },
-              animation: {
-                enable: true,
-                speed: 2,
-                minimumValue: 1,
-              },
+              value: { min: 1, max: 5 },
             },
           },
           detectRetina: true,
         }}
       />
 
-      {/* Parallax Background Elements */}
-      <div className="fixed inset-0 z-0">
-        <div 
-          className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"
-          data-scroll
-          data-scroll-speed="-2"
-        ></div>
-        <div 
-          className="absolute top-1/3 right-20 w-80 h-80 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"
-          data-scroll
-          data-scroll-speed="-1"
-        ></div>
-        <div 
-          className="absolute bottom-20 left-1/4 w-72 h-72 bg-gradient-to-r from-pink-500/10 to-cyan-500/10 rounded-full blur-3xl"
-          data-scroll
-          data-scroll-speed="-3"
-        ></div>
-      </div>
-
       {/* Header */}
       <Header />
 
-      {/* Main Content with enhanced parallax */}
-      <main className="relative z-10">
+      {/* Main Content */}
+      <main>
         <Hero />
         <About />
         <EventGlimpse />
