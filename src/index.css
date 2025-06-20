@@ -156,6 +156,56 @@
   }
 }
 
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Advanced Parallax Animations */
+@keyframes parallax-float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  25% {
+    transform: translateY(-10px) translateX(5px);
+  }
+  50% {
+    transform: translateY(-20px) translateX(0px);
+  }
+  75% {
+    transform: translateY(-10px) translateX(-5px);
+  }
+}
+
+@keyframes depth-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes particle-drift {
+  0% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-100px) translateX(20px);
+    opacity: 0;
+  }
+}
+
 /* Utility Classes */
 .gradient-text {
   background: linear-gradient(45deg, #00d9ff, #a855f7, #ec4899);
@@ -189,6 +239,22 @@
 
 .float-animation {
   animation: float 6s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-parallax-float {
+  animation: parallax-float 8s ease-in-out infinite;
+}
+
+.animate-depth-pulse {
+  animation: depth-pulse 4s ease-in-out infinite;
+}
+
+.animate-particle-drift {
+  animation: particle-drift 6s ease-out infinite;
 }
 
 .glassmorphism {
@@ -242,6 +308,12 @@ html.has-scroll-dragging {
   transform: translate3d(0, 0, 0);
 }
 
+.parallax-layer {
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
 /* Timeline styles */
 .timeline-line {
   position: relative;
@@ -278,6 +350,10 @@ html.has-scroll-dragging {
   .typing-animation {
     animation: typing 2s steps(30, end), blink-caret 0.75s step-end infinite;
   }
+  
+  .parallax-layer {
+    transform: none !important;
+  }
 }
 
 /* Custom scrollbar */
@@ -306,4 +382,10 @@ html.has-scroll-dragging {
   width: 100%;
   height: 100%;
   z-index: -1;
+}
+
+/* Performance optimizations for parallax */
+.parallax-layer * {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
