@@ -36,39 +36,61 @@ const Index = () => {
       delay: 0,
     });
 
-    // Initialize Locomotive Scroll
-    if (scrollRef.current) {
-      const locomotiveScroll = new LocomotiveScroll({
-        el: scrollRef.current,
-        smooth: true,
-        multiplier: 0.8,
-        class: 'is-revealed',
-        lerp: 0.08,
-        smartphone: {
-          smooth: true,
-        },
-        tablet: {
-          smooth: true,
-        },
-      });
+    // Initialize Locomotive Scroll with error handling
+    let locomotiveScroll: LocomotiveScroll | null = null;
+    
+    const initializeScroll = () => {
+      if (scrollRef.current) {
+        try {
+          locomotiveScroll = new LocomotiveScroll({
+            el: scrollRef.current,
+            smooth: true,
+            multiplier: 0.8,
+            class: 'is-revealed',
+            lerp: 0.08,
+            smartphone: {
+              smooth: true,
+            },
+            tablet: {
+              smooth: true,
+            },
+          });
 
-      // Update scroll on window resize
-      const handleResize = () => {
-        locomotiveScroll.update();
-      };
+          // Update scroll on window resize
+          const handleResize = () => {
+            if (locomotiveScroll) {
+              locomotiveScroll.update();
+            }
+          };
 
-      window.addEventListener('resize', handleResize);
+          window.addEventListener('resize', handleResize);
 
-      // Refresh AOS when Locomotive Scroll updates
-      locomotiveScroll.on('scroll', () => {
-        AOS.refresh();
-      });
+          // Refresh AOS when Locomotive Scroll updates
+          locomotiveScroll.on('scroll', () => {
+            AOS.refresh();
+          });
 
-      return () => {
+          return () => {
+            if (locomotiveScroll) {
+              locomotiveScroll.destroy();
+            }
+            window.removeEventListener('resize', handleResize);
+          };
+        } catch (error) {
+          console.warn('Locomotive Scroll initialization failed:', error);
+        }
+      }
+    };
+
+    // Delay initialization to ensure DOM is ready
+    const timer = setTimeout(initializeScroll, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (locomotiveScroll) {
         locomotiveScroll.destroy();
-        window.removeEventListener('resize', handleResize);
-      };
-    }
+      }
+    };
   }, []);
 
   return (
@@ -135,7 +157,7 @@ const Index = () => {
             number: {
               density: {
                 enable: true,
-                value_area: 1000,
+                area: 1000,
               },
               value: 60,
             },
@@ -144,7 +166,7 @@ const Index = () => {
               animation: {
                 enable: true,
                 speed: 1,
-                min_value: 0.1,
+                sync: false,
               },
             },
             shape: {
@@ -155,7 +177,7 @@ const Index = () => {
               animation: {
                 enable: true,
                 speed: 2,
-                min_value: 1,
+                sync: false,
               },
             },
           },
