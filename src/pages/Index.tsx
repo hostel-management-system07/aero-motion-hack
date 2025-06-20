@@ -80,7 +80,9 @@ const Index = () => {
                 enable: true,
                 mode: "repulse",
               },
-              resize: true,
+              resize: {
+                enable: true,
+              },
             },
             modes: {
               push: {
@@ -119,7 +121,7 @@ const Index = () => {
             number: {
               density: {
                 enable: true,
-                area: 800,
+                value: 800,
               },
               value: 80,
             },
