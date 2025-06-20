@@ -1,11 +1,12 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useCallback } from 'react';
 import Particles from '@tsparticles/react';
 import { loadBasic } from '@tsparticles/basic';
 import type { Engine } from '@tsparticles/engine';
 import AOS from 'aos';
 import LocomotiveScroll from 'locomotive-scroll';
+import Loader from '../components/Loader';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import About from '../components/About';
@@ -20,42 +21,58 @@ import Footer from '../components/Footer';
 
 const Index = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadBasic(engine);
   }, []);
 
   useEffect(() => {
-    // Initialize AOS
-    AOS.init({
-      duration: 1000,
-      easing: 'ease-in-out',
-      once: true,
-      mirror: false,
-    });
+    // Simulate loading time and wait for components to be ready
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // 3 second loading screen
 
-    // Initialize Locomotive Scroll
-    if (scrollRef.current) {
-      const locomotiveScroll = new LocomotiveScroll({
-        el: scrollRef.current,
-        smooth: true,
-        multiplier: 1,
-        class: 'is-revealed',
+    return () => clearTimeout(loadingTimer);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      // Initialize AOS after loading is complete
+      AOS.init({
+        duration: 1000,
+        easing: 'ease-in-out',
+        once: true,
+        mirror: false,
       });
 
-      // Update scroll on window resize
-      const handleResize = () => {
-        locomotiveScroll.update();
-      };
+      // Initialize Locomotive Scroll after loading is complete
+      if (scrollRef.current) {
+        const locomotiveScroll = new LocomotiveScroll({
+          el: scrollRef.current,
+          smooth: true,
+          multiplier: 1,
+          class: 'is-revealed',
+        });
 
-      window.addEventListener('resize', handleResize);
+        // Update scroll on window resize
+        const handleResize = () => {
+          locomotiveScroll.update();
+        };
 
-      return () => {
-        locomotiveScroll.destroy();
-        window.removeEventListener('resize', handleResize);
-      };
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+          locomotiveScroll.destroy();
+          window.removeEventListener('resize', handleResize);
+        };
+      }
     }
-  }, []);
+  }, [isLoading]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div ref={scrollRef} data-scroll-container className="min-h-screen bg-black text-white relative">
@@ -121,7 +138,7 @@ const Index = () => {
             number: {
               density: {
                 enable: true,
-                value: 800,
+                area: 800,
               },
               value: 80,
             },
