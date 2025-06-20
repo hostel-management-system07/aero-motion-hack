@@ -22,6 +22,7 @@ import Footer from '../components/Footer';
 const Index = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showContent, setShowContent] = useState(false);
 
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadBasic(engine);
@@ -31,13 +32,17 @@ const Index = () => {
     // Simulate loading time and wait for components to be ready
     const loadingTimer = setTimeout(() => {
       setIsLoading(false);
+      // Add a small delay before showing content for smooth transition
+      setTimeout(() => {
+        setShowContent(true);
+      }, 100);
     }, 3000); // 3 second loading screen
 
     return () => clearTimeout(loadingTimer);
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && showContent) {
       // Initialize AOS after loading is complete
       AOS.init({
         duration: 1000,
@@ -68,14 +73,20 @@ const Index = () => {
         };
       }
     }
-  }, [isLoading]);
+  }, [isLoading, showContent]);
 
   if (isLoading) {
     return <Loader />;
   }
 
   return (
-    <div ref={scrollRef} data-scroll-container className="min-h-screen bg-black text-white relative">
+    <div 
+      ref={scrollRef} 
+      data-scroll-container 
+      className={`min-h-screen bg-black text-white relative transition-opacity duration-1000 ${
+        showContent ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
       {/* Particles Background */}
       <Particles
         id="tsparticles"
@@ -138,7 +149,7 @@ const Index = () => {
             number: {
               density: {
                 enable: true,
-                area: 800,
+                value_area: 800,
               },
               value: 80,
             },
