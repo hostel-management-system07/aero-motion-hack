@@ -135,7 +135,7 @@ const Index = () => {
             number: {
               density: {
                 enable: true,
-                area: 1000,
+                value_area: 1000,
               },
               value: 60,
             },
@@ -144,7 +144,7 @@ const Index = () => {
               animation: {
                 enable: true,
                 speed: 1,
-                minimumValue: 0.1,
+                min_value: 0.1,
               },
             },
             shape: {
@@ -155,7 +155,7 @@ const Index = () => {
               animation: {
                 enable: true,
                 speed: 2,
-                minimumValue: 1,
+                min_value: 1,
               },
             },
           },
